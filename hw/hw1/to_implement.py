@@ -57,8 +57,12 @@ def stochastic_effet_wrong_turn(env, action, success_probability=0.8):
     Returns:
         str: The effective action after stochastic transition effects.
     """
-    #TODO Task 2
-    effective_action = ...
+    #TODO Task 2 DONE
+    if action == SAMPLE:
+        return action
+
+    succesful = np.random.default_rng().random() < success_probability
+    effective_action = action if succesful else env.WRONG_TURN_ACTION[action]
 
     return effective_action
 
@@ -320,10 +324,11 @@ class POCalderaEnv(CalderaEnv):
             spaces.Dict: Observation space from ``CalderaEnv`` plus
             ``surrounding_obstacles`` as ``MultiBinary(8)``.
         """
-        #TODO Task 3
-        observation_space = ...
+        #TODO Task 3 DONE
+        observation_space = super()._get_observation_space().spaces
+        observation_space["surrounding_obstacles"] = spaces.MultiBinary(8)
 
-        return observation_space
+        return spaces.Dict(observation_space)
 
     def _get_observation(
         self,
@@ -339,8 +344,9 @@ class POCalderaEnv(CalderaEnv):
             dict: Base observation fields plus ``surrounding_obstacles``
             (``np.ndarray`` of 8 booleans).
         """
-        #TODO Task 3
-        observation = ...
+        #TODO Task 3 DONE
+        observation = super()._get_observation(action_result)
+        observation["surrounding_obstacles"] = self._get_surrounding_obstacles(tuple(self.position))
 
         return observation
 
@@ -367,7 +373,12 @@ class POCalderaEnv(CalderaEnv):
         Raises:
             ValueError: If ``position`` is outside map bounds.
         """
-        #TODO Task 3
-        occupied_directions = ...
+        #TODO Task 3 DONE
+        occupied_directions = np.zeros((8,) , dtype = bool)
+        temp_pos = self.position
+        for i, direction_coord in enumerate(DIRECTION_STEPS.values()):
+            for c in range(1, self.observability_distance + 1):
+                temp_pos = tuple(self.position + c * np.array(direction_coord) )
+                occupied_directions[i] = self.is_occupied(temp_pos) 
 
         return occupied_directions
