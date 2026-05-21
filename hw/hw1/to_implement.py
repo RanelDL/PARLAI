@@ -129,8 +129,15 @@ class CalderaEnv(BaseCalderaEnv):
                 - ``sampled_before``: ``Discrete(2)``
                 - ``value``: scalar ``Box(dtype=float64)``
         """
-        #TODO Task 1
-        observation_space = ...
+        #TODO Task 1 DONE
+
+        observation_space ={
+                "position" : spaces.Box(low = np.array([0,0]), high = self.max_position , shape=(2,), dtype=int64),
+                "energy" : spaces.Discrete(initial_energy + 1),
+                "sampled_before": spaces.Discrete(2),
+                "value":  spaces.Box(low = self.min_value_observed, high = self.max_value_observed, dtype=float64)
+ 
+        } 
         
         return spaces.Dict(observation_space)
 
@@ -153,8 +160,14 @@ class CalderaEnv(BaseCalderaEnv):
             dict: Observation with keys ``position``, ``energy``,
             ``sampled_before``, and ``value``.
         """
-        #TODO Task 1
-        observation = ...
+        #TODO Task 1 DONE
+        if action_result != None:
+            sampled_before, value = action_result
+            if sampled_before == 0: value = DEFAULT_VALUE
+        else:
+            sampled_before = self.position in self.sampled_cells
+            value = DEFAULT_VALUE
+        observation = {"position": self.position, "energy": self.energy, "sampled_before": sampled_before, "value": value}
 
         return observation
 
@@ -167,12 +180,16 @@ class CalderaEnv(BaseCalderaEnv):
                   else ``0``.
                 - ``sampled_value`` is the cell value (retrieved from cache or map).
         """
-        #TODO Task 1
-        sampled_before = ...
-        sampled_value = ...
+        #TODO Task 1 DONE
+        sampled_value = self._get_value(self.position) 
+        if self.position in self.sampled_cells:
+            sampled_before =  1
+        else:
+            sampled_before = 0
+            self.sampled_cells[self.postion] = sampled_value
 
-        self.max_value_observed = ...
-        self.min_value_observed = ...
+        self.max_value_observed = max(self.max_value_observed, sampled_value)
+        self.min_value_observed = max(self.min_value_observed, sampled_value)
 
         return sampled_before, sampled_value
 
