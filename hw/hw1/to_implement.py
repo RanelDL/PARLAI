@@ -82,8 +82,12 @@ def reward_function_explore(env, action, obs) -> float:
     Returns:
         float: Scalar reward for the step.
     """
-    #TODO Task 1
-    reward = ...
+    #TODO Task 1 DONE
+
+    if action == SAMPLE:
+        reward = 1.0 if obs["sampled_before"]==0 else -0.5
+    else:  # UP DOWN RIGHT LEFT
+        reward = -0.1
 
     return reward
 
@@ -110,10 +114,11 @@ def reward_function_gap_to_max(env, action, obs) -> float:
     Returns:
         float: Scalar reward for the step.
     """
-    #TODO Task 1
-    reward = ...
+    #TODO Task 1 DONE
 
-    return reward
+    reward_explore = reward_function_explore(env, action, obs)
+    value_delta = -(env.max_value_observed - obs['value'])
+    return value_delta if reward_explore==1.0 else reward_explore
 
 
 class CalderaEnv(BaseCalderaEnv):
@@ -132,10 +137,10 @@ class CalderaEnv(BaseCalderaEnv):
         #TODO Task 1 DONE
 
         observation_space ={
-                "position" : spaces.Box(low = np.array([0,0]), high = self.max_position , shape=(2,), dtype=int64),
-                "energy" : spaces.Discrete(initial_energy + 1),
+                "position" : spaces.Box(low = np.array([0,0]), high = self.max_position , shape=(2,), dtype=np.int64),
+                "energy" : spaces.Discrete(self.initial_energy + 1),
                 "sampled_before": spaces.Discrete(2),
-                "value":  spaces.Box(low = self.min_value_observed, high = self.max_value_observed, dtype=float64)
+                "value":  spaces.Box(low = self.max_value_observed, high = self.min_value_observed, dtype=np.float64)
  
         } 
         
@@ -165,8 +170,9 @@ class CalderaEnv(BaseCalderaEnv):
             sampled_before, value = action_result
             if sampled_before == 0: value = DEFAULT_VALUE
         else:
-            sampled_before = self.position in self.sampled_cells
-            value = DEFAULT_VALUE
+            sampled_before = tuple(self.position) in self.sampled_cells.keys()
+            sampled_before = 1 if sampled_before else 0
+            value = np.float64(DEFAULT_VALUE)
         observation = {"position": self.position, "energy": self.energy, "sampled_before": sampled_before, "value": value}
 
         return observation
@@ -208,9 +214,17 @@ class CalderaEnv(BaseCalderaEnv):
                 - ``collision_occurred`` is ``True`` iff movement was interrupted
                   by obstacle or boundary collision.
         """
-        #TODO Task 1
-        position = ...
-        collision_occurred = ...
+        #TODO Task 1 Done
+        proposed_position = self._get_proposed_destination(action)
+        path = generate_path(self.position, proposed_position)
+        position = self.position
+        collision_occurred = False
+        for cell in path:
+            if self.is_occupied(cell):
+                collision_occurred = True
+                break
+            else:
+                position = cell
 
         return position, collision_occurred
 
