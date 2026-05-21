@@ -57,8 +57,12 @@ def stochastic_effet_wrong_turn(env, action, success_probability=0.8):
     Returns:
         str: The effective action after stochastic transition effects.
     """
-    #TODO Task 2
-    effective_action = ...
+    #TODO Task 2 DONE
+    if action == SAMPLE:
+        return action
+
+    succesful = np.random.default_rng().random() < success_probability
+    effective_action = action if succesful else env.WRONG_TURN_ACTION[action]
 
     return effective_action
 
