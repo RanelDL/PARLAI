@@ -140,7 +140,7 @@ class CalderaEnv(BaseCalderaEnv):
                 "position" : spaces.Box(low = np.array([0,0]), high = self.max_position , shape=(2,), dtype=np.int64),
                 "energy" : spaces.Discrete(self.initial_energy + 1),
                 "sampled_before": spaces.Discrete(2),
-                "value":  spaces.Box(low = self.max_value_observed, high = self.min_value_observed, dtype=np.float64)
+                "value":  spaces.Box(low = self.max_value_observed, high = self.min_value_observed, dtype=np.float64, shape=())
  
         } 
         
@@ -168,7 +168,6 @@ class CalderaEnv(BaseCalderaEnv):
         #TODO Task 1 DONE
         if action_result != None:
             sampled_before, value = action_result
-            if sampled_before == 0: value = DEFAULT_VALUE
         else:
             sampled_before = tuple(self.position) in self.sampled_cells.keys()
             sampled_before = 1 if sampled_before else 0
@@ -187,15 +186,15 @@ class CalderaEnv(BaseCalderaEnv):
                 - ``sampled_value`` is the cell value (retrieved from cache or map).
         """
         #TODO Task 1 DONE
-        sampled_value = self._get_value(self.position) 
-        if self.position in self.sampled_cells:
+        sampled_value = self._get_value(tuple(self.position))
+        if tuple(self.position) in self.sampled_cells:
             sampled_before =  1
         else:
             sampled_before = 0
-            self.sampled_cells[self.postion] = sampled_value
+            self.sampled_cells[tuple(self.position)] = sampled_value
 
         self.max_value_observed = max(self.max_value_observed, sampled_value)
-        self.min_value_observed = max(self.min_value_observed, sampled_value)
+        self.min_value_observed = min(self.min_value_observed, sampled_value)
 
         return sampled_before, sampled_value
 
