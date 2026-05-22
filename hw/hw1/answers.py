@@ -1,10 +1,20 @@
 q1 = r"""
-_YOUR ANSWER HERE_
 
-_Wrap mathjax syntax with single $ for inline math:_ $x^2 + \frac{y}{2} \cdot \delta = \sum_{i=1}^n \Delta \text{ and } \nabla f$
+MDP of shape <S,A,P,R>:
+$$
+\begin{aligned}
+\mathbf{S} & \subset \ R^{2} \times N\ \times ( N\times N) \ \times \ R\ \times R\times \left( R^{2}\right)^{k}\\
+s & =\ ( position,\ energy,\ sampled\ before,value,\ max\ value,\ obstacles) \ \\
+\mathbf{A} & =\ \{\ Move\ North,\ Move\ South,\ Move\ East,\ Move\ West,\ Sample\}\\
+\mathbf{P}( s'\ |\ s,a) & =\ 1\\
+\mathbf{R}( s,a,s') & =\ \begin{cases}
+-0.5 & a\ =\ Sample\ \land \ sampled\ before\ \\
+1 & a=\ Sample\ \land \ !\ sampled\ before\\
+-1 & else
+\end{cases}
+\end{aligned}
+$$
 
-_Wrap mathjax syntax with double $$ for display math:_
-$$x^2 + \frac{y}{2} \cdot \delta = \sum_{i=1}^n\Delta \text{ and } \nabla f$$
 """
 
 
