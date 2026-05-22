@@ -379,6 +379,8 @@ class POCalderaEnv(CalderaEnv):
         for i, direction_coord in enumerate(DIRECTION_STEPS.values()):
             for c in range(1, self.observability_distance + 1):
                 temp_pos = tuple(self.position + c * np.array(direction_coord) )
-                occupied_directions[i] = self.is_occupied(temp_pos) 
+                if self.is_occupied(temp_pos):
+                    occupied_directions[i] = True
+                    break
 
         return occupied_directions
