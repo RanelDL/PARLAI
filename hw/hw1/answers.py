@@ -2,10 +2,18 @@ q1 = r"""
 
 MDP of shape <S,A,P,R>:
 $$
+ \begin{array}{l}
+\begin{aligned}
+Environment: & \\
+ & Deterministic\ action\ outcomes\\
+ & Full\ observability\\
+Model:\ \ \ \  & Explicit/\ Flat\ Markov\ Decision\ Process
+\end{aligned}\\
+\\
 \begin{aligned}
 \mathbf{S} & \subset \ R^{2} \times N\ \times ( N\times N) \ \times \ R\ \times R\times \left( R^{2}\right)^{k}\\
 s & =\ ( position,\ energy,\ sampled\ before,value,\ max\ value,\ obstacles) \ \\
-\mathbf{A} & =\ \{\ Move\ North,\ Move\ South,\ Move\ East,\ Move\ West,\ Sample\}\\
+\mathbf{A} & =\ \{\ North,\ South,\ East,\ West,\ Sample\}\\
 \mathbf{P}( s'\ |\ s,a) & =\ 1\\
 \mathbf{R}( s,a,s') & =\ \begin{cases}
 -0.5 & a\ =\ Sample\ \land \ sampled\ before\ \\
@@ -13,24 +21,38 @@ s & =\ ( position,\ energy,\ sampled\ before,value,\ max\ value,\ obstacles) \ \
 -1 & else
 \end{cases}
 \end{aligned}
+\end{array}
 $$
 
 """
 
 
 q2 = r"""
+$$
  \begin{array}{l}
+\begin{aligned}
+Environment: & \\
+ & Stochastic\ action\ outcomes\\
+ & Full\ observability\\
+Model:\ \ \ \ \ \ \ \  & MDP
+\end{aligned}\\
+\\
+\\
+\\
 \begin{aligned}
 \mathbf{S} & \subset \ R^{2} \times N\ \times ( N\times N) \ \times \ R\ \times R\times \left( R^{2}\right)^{k}\\
 s & =\ ( position,\ energy,\ sampled\ before,value,\ max\ value,\ obstacles) \ \\
+ & \\
 \mathbf{A} & =\ \{\ North,\ South,\ East,\ West,\ Sample\}\\
+ & \\
 \mathbf{P}( s'\ |\ s,a) & =\ \begin{cases}
 0.8 & a\ =move\ action,\ s'\ =\ MoveAction( s) & \\
 0.2 & a\ =move\ action,\ s'\ =\ ( WrongTurn( move\ action))( s) & 
 \end{cases}\\
+ & \\
 \mathbf{R}( s,a,s') & =\ \begin{cases}
--0.5 & a\ =\ Sample\ \land \ sampled\ before\ \\
-1 & a=\ Sample\ \land \ !\ sampled\ before\\
+-0.5 & a\ =\ Sample\ \land \ sampled\ before( s.pos) \ \\
+1 & a=\ Sample\ \land \ !\ sampled\ before( s.pos)\\
 -1 & else
 \end{cases}
 \end{aligned}\\
@@ -47,8 +69,9 @@ West & a\ =\ North
 ( 1,0) & a=East\\
 ( 0,-1) & a=South\\
 ( -1,0) & a=West
-\end{cases}
+\end{cases}\\
 \end{array}
+$$
 """
 
 
