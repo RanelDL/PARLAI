@@ -221,10 +221,11 @@ $$x^2 + \frac{y}{2} \cdot \delta = \sum_{i=1}^n\Delta \text{ and } \nabla f$$
 
 
 q5i = r"""
-_YOUR ANSWER HERE_
-
-_Wrap mathjax syntax with single $ for inline math:_ $x^2 + \frac{y}{2} \cdot \delta = \sum_{i=1}^n \Delta \text{ and } \nabla f$
-
-_Wrap mathjax syntax with double $$ for display math:_
-$$x^2 + \frac{y}{2} \cdot \delta = \sum_{i=1}^n\Delta \text{ and } \nabla f$$
+The DBN hides the Dn random variable (we sum on all possible Dn values in the formula), and it is better because that
+variable is not observable. this way we can focus on information we have from observable On.
+Also, the DBN doesn't hide the underlying connection between the variables, while the Markov chain does by definition.
+This way all the variables are factored in a compact and modular way.
+The DBN method allows us to estimate the Dn distribution without observing Dn (it is hidden anyway), but by relying only 
+on the observable mission logs On - these coupled with Xn and the DBN give us all the information we need to model Dn.
+This way we get to understand the demand better, and build a more efficient cartridge policy.
 """
